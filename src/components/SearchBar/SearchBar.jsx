@@ -9,7 +9,7 @@ export default function SearcBar ({search}){
     return(
         <Formik initialValues={{ query: '' }} onSubmit={handleSubmit}>
 			<Form>
-				<Field name='query' type='text' autocomplete="off" autofocus />
+				<Field name='query' type='text'/>
 				<button type='submit'>Search</button>
 			</Form>
 		</Formik>

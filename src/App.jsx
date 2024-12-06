@@ -4,24 +4,57 @@ import './App.css'
 
 import getImages from './services/api'
 import ImageGallery from './components/ImageGallery/ImageGallery'
+import SearcBar from './components/SearchBar/SearchBar'
 
 
 
 export default function App (){
   const [images, setImages] = useState([])
+  const [query, setQuery] = useState('')
+  const [page, setPage] = useState(1)
+  const [totalImages, setTotalImages] = useState(0)
 
 
-  useEffect(()=>{
-    const getSome = async () => {
-      const data = await getImages
+  // useEffect(()=>{
+  //   const getSome = async () => {
+  //     const data = await getImages()
+  //     setImages(data.results)
+  //   }
+  //   getSome()
+  // },[])
+
+  const search = async (query) =>{
+    setQuery(query)
+    setPage(0)
+    // const res = await getImages(query)
+    // setImages(res.results)
+  }
+
+const getNextPage = async () => {
+  setPage(page + 1)
+}
+
+useEffect (() => {
+  const fetchImages = async () => {
+    const {data} = await getImages(query, page)
+    console.log("API Response:", data);
+    if(page===1){
       setImages(data.results)
+      setTotalImages(data.total)
+    }else{
+      setImages((prevImages) =>[...prevImages,...data.results])
     }
-    getSome()
-  },[])
+  }
+  if(query) fetchImages()
+}, [query, page])
 
 
   return(
-    <ImageGallery images={images} />
+    <>
+    <SearcBar search={search}/>
+    {images.length > 0 && <ImageGallery images={images} />}
+    {images.length > 0 && images.length < totalImages && <button onClick={getNextPage}>Load more...</button>}
+    </>
   );
 
 }
