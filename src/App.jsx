@@ -1,11 +1,14 @@
 import {  useEffect, useState } from 'react'
-// import SearcBar from './components/SearchBar/SearchBar'
+
 import './App.css'
 
 import getImages from './services/api'
 import ImageGallery from './components/ImageGallery/ImageGallery'
 import SearcBar from './components/SearchBar/SearchBar'
-
+import LoadMoreBtn from './components/LoadMoreBtn/LoadMoreBtn'
+import Loader from './components/Loader/Loader'
+import ErrorMessage from './components/ErrorMessage/ErrorMessage'
+import ImageModal from './components/ImageModal/ImageModal'
 
 
 export default function App (){
@@ -13,113 +16,86 @@ export default function App (){
   const [query, setQuery] = useState('')
   const [page, setPage] = useState(1)
   const [totalImages, setTotalImages] = useState(0)
+  const [loading, setIsLoading] = useState(false)
+  const [error, setError] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
 
-  // useEffect(()=>{
-  //   const getSome = async () => {
-  //     const data = await getImages()
-  //     setImages(data.results)
-  //   }
-  //   getSome()
-  // },[])
 
   const search = async (query) =>{
     setQuery(query)
-    setPage(0)
-    // const res = await getImages(query)
-    // setImages(res.results)
+    setPage(1)
+    setImages([])
+    setError(false)
+   
   }
 
 const getNextPage = async () => {
-  setPage(page + 1)
-}
+  setPage((prevPage) => prevPage + 1);
 
-useEffect (() => {
+  };
+
+const openModal = (image) => {
+    setSelectedImage(image)
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+    setSelectedImage(false)
+  };
+
+useEffect(() => {
   const fetchImages = async () => {
-    const {data} = await getImages(query, page)
-    console.log("API Response:", data);
-    if(page===1){
-      setImages(data.results)
-      setTotalImages(data.total)
-    }else{
-      setImages((prevImages) =>[...prevImages,...data.results])
+    
+    try {
+      setIsLoading(true);
+      setError(false)
+      const { data } = await getImages(query, page);
+      console.log("API Response:", data);
+
+      if (page === 1) {
+
+        setImages(data.results);
+        setTotalImages(data.total);
+        
+      } else {
+
+        setImages((prevImages) => [...prevImages, ...data.results]);
+      }
+    } catch (error) {
+      setError(true);
+      console.error("Error fetching images:", error); 
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  if (query) {
+    fetchImages(); 
   }
-  if(query) fetchImages()
-}, [query, page])
+}, [query, page]);
 
 
   return(
     <>
     <SearcBar search={search}/>
-    {images.length > 0 && <ImageGallery images={images} />}
-    {images.length > 0 && images.length < totalImages && <button onClick={getNextPage}>Load more...</button>}
+   
+    {images.length > 0 ? <ImageGallery images={images} openModal={openModal} /> : !loading && query && <p>No results..</p>}
+    {loading && <Loader/>}
+    {error && (
+        <ErrorMessage/>
+      )}
+    {images.length > 0 && images.length < totalImages && <LoadMoreBtn getNextPage={getNextPage}/>}
+    {modalIsOpen && selectedImage && (<ImageModal
+        image={selectedImage}
+        modalIsOpen={modalIsOpen}
+        closeModal={closeModal}
+      />)}
     </>
   );
-
 }
 
 
-
-// const App = () => {
-//   const [query, setQuery] = useState("");
-//   const [images, setImages] = useState([]);
-//   const [page, setPage] = useState(1);
-//   const [isLoading, setIsLoading] = useState(false);
-//   const [error, setError] = useState(false);
-//   const [totalImages, setTotalImages] = useState(0);
-
-//   const search = async (query) => {
-//     setQuery(query);
-//     setPage(1);
-//     setImages([]);
-//   };
-
-//   const getNextPage = async () => {
-//     setPage((prevPage) => prevPage + 1);
-//   };
-
-//   useEffect(() => {
-//     const fetchImages = async () => {
-//       setIsLoading(true);
-//       setError(false);
-
-//       try {
-//         const { data } = await getImages(query, page); // Виклик API
-//         if (page === 1) {
-//           setImages(data.results);
-//           setTotalImages(data.total);
-//         } else {
-//           setImages((oldData) => [...oldData, ...data.results]);
-//         }
-//       } catch (err) {
-//         setError(true);
-//       } finally {
-//         setIsLoading(false);
-//       }
-//     };
-
-//     if (query) fetchImages();
-//   }, [page, query]);
-
-//   return (
-//     <>
-//       <SearchBar search={search} />
-//       <div>
-//         {isLoading && <p>Loading...</p>}
-//         {error && <p>Error fetching images.</p>}
-//         <ul>
-//           {images.map((image) => (
-//             <li key={image.id}>
-//               <img src={image.urls.small} alt={image.alt_description} />
-//             </li>
-//           ))}
-//         </ul>
-//         {images.length < totalImages && (
-//           <button onClick={getNextPage}>Load More</button>
-//         )}
-//       </div>
-//     </>
-//   );
-// };
 
