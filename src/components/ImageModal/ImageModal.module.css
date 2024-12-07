@@ -1,0 +1,38 @@
+.modalImage {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.modalContent {
+  text-align: center;
+}
+
+.imageInfo {
+  background-color: rgba(255, 255, 255, 0.1); /* Напівпрозорий фон для тексту */
+  padding: 10px;
+  border-radius: 5px;
+  text-align: left;
+}
+
+.description,
+.likes {
+  margin: 5px 0;
+  font-size: 16px;
+}
+
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.closeButton:hover {
+  color: #ff5555;
+}

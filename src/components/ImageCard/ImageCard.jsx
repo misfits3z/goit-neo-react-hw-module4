@@ -1,13 +1,21 @@
+import css from './ImageCard.module.css'
 
-
-export default function ImageCard ({image}){
+export default function ImageCard ({image, openModal}){
+  const handleClick = () => {
+    openModal(image);
+  }
 
     return(
-        <li>
-          <a href={image.urls.full} target="_blank" rel="noopener noreferrer">
-            <img src={image.urls.thumb} alt={image.alt_description} />
-          </a>
-        </li>
+        <div className={css.item}>
+          
+            <img 
+            className={css.galleryImage} 
+            src={image.urls.thumb} 
+            alt={image.alt_description} 
+            onClick={handleClick}
+            />
+          
+        </div>
 
     )
 }

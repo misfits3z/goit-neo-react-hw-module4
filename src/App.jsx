@@ -19,7 +19,7 @@ export default function App (){
   const [loading, setIsLoading] = useState(false)
   const [error, setError] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState([]);
 
 
 
@@ -28,6 +28,7 @@ export default function App (){
     setPage(1)
     setImages([])
     setError(false)
+    setModalIsOpen(false)
    
   }
 
@@ -37,18 +38,19 @@ const getNextPage = async () => {
   };
 
 const openModal = (image) => {
+    
     setSelectedImage(image)
     setModalIsOpen(true);
   };
 
   const closeModal = () => {
     setModalIsOpen(false);
-    setSelectedImage(false)
+    // setSelectedImage(false)
   };
 
 useEffect(() => {
   const fetchImages = async () => {
-    
+    setModalIsOpen(false)
     try {
       setIsLoading(true);
       setError(false)
@@ -90,7 +92,6 @@ useEffect(() => {
     {images.length > 0 && images.length < totalImages && <LoadMoreBtn getNextPage={getNextPage}/>}
     {modalIsOpen && selectedImage && (<ImageModal
         image={selectedImage}
-        modalIsOpen={modalIsOpen}
         closeModal={closeModal}
       />)}
     </>
