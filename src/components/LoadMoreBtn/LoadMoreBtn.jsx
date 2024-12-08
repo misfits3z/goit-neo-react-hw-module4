@@ -1,3 +1,4 @@
+import css from './LoadMoreBtn.module.css'
 
 export default function LoadMoreBtn ({getNextPage}){
     const loadMore = () => {
@@ -5,6 +6,6 @@ export default function LoadMoreBtn ({getNextPage}){
   };
 
     return (
-        <button onClick={loadMore}>Load more...</button>
+        <button className={css.btnLoadMore}onClick={loadMore}>Load more...</button>
     )
 }

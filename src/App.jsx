@@ -4,7 +4,7 @@ import './App.css'
 
 import getImages from './services/api'
 import ImageGallery from './components/ImageGallery/ImageGallery'
-import SearcBar from './components/SearchBar/SearchBar'
+import SearchBar from './components/SearchBar/SearchBar'
 import LoadMoreBtn from './components/LoadMoreBtn/LoadMoreBtn'
 import Loader from './components/Loader/Loader'
 import ErrorMessage from './components/ErrorMessage/ErrorMessage'
@@ -82,10 +82,10 @@ useEffect(() => {
 
   return(
     <>
-    <SearcBar search={search}/>
+    <SearchBar search={search}/>
    
     {images.length > 0 ? <ImageGallery images={images} openModal={openModal} /> : !loading && query && <p>No results..</p>}
-    {loading && <Loader/>}
+    {loading && <Loader />}
     {error && (
         <ErrorMessage/>
       )}
